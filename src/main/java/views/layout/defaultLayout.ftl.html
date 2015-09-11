@@ -12,6 +12,7 @@
     <link href="/assets/webjars/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
     <!-- Optional theme -->
     <link rel="stylesheet" href="/assets/webjars/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/assets/css/general.css">
 
     <!-- Latest compiled and minified JavaScript -->
     
@@ -29,24 +30,70 @@
     <![endif]-->
   </head>
 <body>
-
     <div class="container">
         
         <#include "header.ftl.html"/>
         
-        <#if (flash.error)??>
-            <div class="alert alert-danger">
-                ${flash.error}
-            </div>
-        </#if>
-        
-        <#if (flash.success)??>
-            <div class="alert alert-success">
-                ${flash.success}
-            </div>
-        </#if>
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <a href="#"><img class="img-responsive img-circle center-block" src="/assets/img/general/icon-profile.png" alt="Profile picture"></a>
+                        <h2 class="text-center">Pepito Juan Carlos</h2>
+                    </div>
+                </div>
+                <div class="panel panel-default hidden-xs">
+                    <div class="panel-body">
 
-        <#nested/>
+                        <div class="media">
+                            <div class="media-left">
+                                <a href="#"><img class="media-object img-rounded avatar-32" src="/assets/img/general/icon-profile.png" alt="Profile picture"></a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">Chiche</h4>
+                                Chiche's status
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        <div class="media">
+                            <div class="media-left">
+                                <a href="#"><img class="media-object img-rounded avatar-32" src="/assets/img/general/icon-profile.png" alt="Profile picture"></a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">Carlos</h4>
+                                Carlos's status
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        <div class="media">
+                            <div class="media-left">
+                                <a href="#"><img class="media-object img-rounded avatar-32" src="/assets/img/general/icon-profile.png" alt="Profile picture"></a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">Alberti</h4>
+                                Alberti's status
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        <div class="media">
+                            <div class="media-left">
+                                <a href="#"><img class="media-object img-rounded avatar-32" src="/assets/img/general/icon-profile.png" alt="Profile picture"></a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">Juan</h4>
+                                Juan's status
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-9">
+                <#nested/>
+            </div>
+        </div>
 
         <#include "footer.ftl.html"/>
         

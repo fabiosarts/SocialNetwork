@@ -31,18 +31,11 @@ public class ApplicationController {
 
     }
     
-    public Result helloWorldJson() {
+    public Result news() {
+        Result html = Results.html();
         
-        SimplePojo simplePojo = new SimplePojo();
-        simplePojo.content = "Hello World! Hello Json!";
-
-        return Results.json().render(simplePojo);
-
-    }
-    
-    public static class SimplePojo {
-
-        public String content;
+        html.render("test", "test");
         
+        return html;
     }
 }

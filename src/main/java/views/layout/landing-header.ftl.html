@@ -9,9 +9,17 @@
 			<a class="navbar-brand" href="/">${i18n("header.title")}</a>
 		</div>
 		<div class="navbar-collapse collapse">
-			<ul class="nav navbar-nav">
-				<li class="active"><a href="/">Test link</a></li>
-			</ul>
+                    <form class="navbar-form navbar-right" action="/news">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <input type="email" class="form-control" placeholder="E-Mail">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="&bullet;&bullet;&bullet;&bullet;">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-default">Log in</button>
+                    </form>
 		</div>
 		<!--/.navbar-collapse -->
 	</div>

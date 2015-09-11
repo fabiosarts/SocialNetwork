@@ -1,0 +1,22 @@
+// Avatar sizes
+
+.avatar-128 {
+    width: 128px;
+    height: 128px;
+}
+.avatar-64 {
+    width: 64px;
+    height: 64px;
+}
+.avatar-32 {
+    width: 32px;
+    height: 32px;
+}
+
+// Thumbail sizes
+
+.thumbnail-post
+{
+    width: 180px;
+    height: 180px;
+}
