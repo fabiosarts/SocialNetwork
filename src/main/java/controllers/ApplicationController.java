@@ -16,14 +16,24 @@
 
 package controllers;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import ninja.Result;
 import ninja.Results;
 
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import models.User;
+import ninja.params.Param;
 
 
 @Singleton
 public class ApplicationController {
+    @Inject
+    Provider<EntityManager> EntityManagerProvider;
 
     public Result index() {
 
@@ -34,7 +44,28 @@ public class ApplicationController {
     public Result news() {
         Result html = Results.html();
         
-        html.render("test", "test");
+        
+        
+        return html;
+    }
+    
+    @Transactional
+    public Result login(@Param("email") String pEmail, @Param("secret") String pPassword) {
+        Result html = Results.html();
+        EntityManager em = EntityManagerProvider.get();
+        
+        Query q = em.createQuery("SELECT x FROM User x where email='" + pEmail + "'");
+        List<User> user = (List<User>) q.getResultList();
+        
+        if(user.size() == 1) {
+            if(pPassword.equals(user.get(0).password)) {
+                html = Results.redirect("/news");
+                System.out.println("si");
+            } else {
+                html = Results.redirect("/");
+                System.out.println("no");
+            }
+        }
         
         return html;
     }
