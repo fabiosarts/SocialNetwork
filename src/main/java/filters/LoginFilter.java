@@ -24,7 +24,7 @@ public class LoginFilter implements Filter {
     public Result filter(FilterChain fc, Context context) {
         Session session = context.getSession();
         if(context.getSession() == null || session.get(ApplicationController.CookieSession) == null) {
-            return Results.redirect("/");
+            return Results.redirect("/login");
         } else {
             EntityManager em = EntityManagerProvider.get();
 

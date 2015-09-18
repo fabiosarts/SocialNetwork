@@ -44,7 +44,6 @@ public class ApplicationController {
     @Inject
     Provider<EntityManager> EntityManagerProvider;
 
-    @UnitOfWork
     @FilterWith(LoginFilter.class)
     public Result index(Context context) {
         return Results.redirect("/news");
@@ -90,6 +89,21 @@ public class ApplicationController {
     public Result logout(Context context)
     {
         context.getSession().clear();
+
+        return Results.redirect("/");
+    }
+    
+    @Transactional
+    public Result register(@Param("email") String pEmail,
+            @Param("secret") String pPassword,
+            @Param("fullname") String pFullName,
+            Context context) {
+        Session session = context.getSession();
+        EntityManager em = EntityManagerProvider.get();
+        
+        User user = new User(pEmail, pPassword, pFullName);
+        em.persist(user);
+        
         return Results.redirect("/");
     }
 }

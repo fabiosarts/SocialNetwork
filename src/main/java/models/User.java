@@ -12,11 +12,13 @@ public class User {
     public Long id;
     public String email;
     public String password;
+    public String full_name;
     
     public User() {}
 
-    public User(String email, String password) {
+    public User(String email, String password, String full_name) {
         this.email = email;
         this.password = password;
+        this.full_name = full_name;
     }
 }
