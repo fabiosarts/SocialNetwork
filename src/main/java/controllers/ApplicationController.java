@@ -23,24 +23,34 @@ import ninja.Results;
 
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import filters.LoginFilter;
 import java.util.List;
+import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import models.User;
+import models.User_session;
+import ninja.Context;
+import ninja.FilterWith;
+import ninja.jpa.UnitOfWork;
 import ninja.params.Param;
+import ninja.session.Session;
 
 
 @Singleton
 public class ApplicationController {
+    public static String CookieSession = "sessionid";
+    
     @Inject
     Provider<EntityManager> EntityManagerProvider;
 
-    public Result index() {
-
-        return Results.html();
-
+    @UnitOfWork
+    @FilterWith(LoginFilter.class)
+    public Result index(Context context) {
+        return Results.redirect("/news");
     }
     
+    @FilterWith(LoginFilter.class)
     public Result news() {
         Result html = Results.html();
         
@@ -50,23 +60,36 @@ public class ApplicationController {
     }
     
     @Transactional
-    public Result login(@Param("email") String pEmail, @Param("secret") String pPassword) {
-        Result html = Results.html();
-        EntityManager em = EntityManagerProvider.get();
-        
-        Query q = em.createQuery("SELECT x FROM User x where email='" + pEmail + "'");
-        List<User> user = (List<User>) q.getResultList();
-        
-        if(user.size() == 1) {
-            if(pPassword.equals(user.get(0).password)) {
-                html = Results.redirect("/news");
-                System.out.println("si");
-            } else {
-                html = Results.redirect("/");
-                System.out.println("no");
+    public Result login(@Param("email") String pEmail, @Param("secret") String pPassword, Context context) {
+        if(context.getMethod() == "POST")
+        {
+            EntityManager em = EntityManagerProvider.get();
+            Session session = context.getSession();
+
+            Query q = em.createQuery("SELECT x FROM User x where email='" + pEmail + "'");
+            List<User> user = (List<User>) q.getResultList();
+
+            if(user.size() == 1) {
+                if(pPassword.equals(user.get(0).password)) {
+                    User_session uSession = new User_session(UUID.randomUUID().toString(), user.get(0).id);
+                    em.persist(uSession);
+                    session.put(CookieSession, uSession.id);
+
+                    return Results.redirect("/news");
+                } else {
+                    return Results.redirect("/");
+                }
             }
+        } else {
+            return Results.html();
         }
         
-        return html;
+        return Results.redirect("/");
+    }
+    
+    public Result logout(Context context)
+    {
+        context.getSession().clear();
+        return Results.redirect("/");
     }
 }
