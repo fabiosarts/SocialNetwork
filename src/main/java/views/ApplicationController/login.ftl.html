@@ -4,25 +4,25 @@
 <div class="row">
     <div class="col-sm-4 col-sm-offset-8">
         <div class="panel panel-default">
-            <form method="post" action="/register">
+            <form id="form_register" method="post" action="/register">
                 <div class="panel-body">
                     <h4>Sign up</h4>
                     <p>It's free!</p>
                     <div class="form-group">
-                        <input type="text" placeholder="Full name" class="form-control" name="fullname">
+                        <input type="text" placeholder="Full name" class="form-control js_fullname" name="fullname">
                     </div>
                     <div class="form-group">
-                        <input type="email" placeholder="E-Mail" class="form-control" name="email">
+                        <input type="email" placeholder="E-Mail" class="form-control js_email" name="email">
                     </div>
                     <div class="form-group">
-                        <input type="password" placeholder="Password" class="form-control" name="secret">
+                        <input type="password" placeholder="Password" class="form-control js_password1" name="secret">
                     </div>
                     <div class="form-group">
-                        <input type="password" placeholder="Confirm password" class="form-control">
+                        <input type="password" placeholder="Confirm password" class="form-control js_password2">
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <input type="submit" class="btn btn-primary btn-block" value="Register">
+                    <input type="submit" class="btn btn-primary btn-block js_submit" disabled="true" value="Register">
                 </div>
             </form>
         </div>

@@ -49,11 +49,20 @@ public class ApplicationController {
         return Results.redirect("/news");
     }
     
+    @UnitOfWork
     @FilterWith(LoginFilter.class)
-    public Result news() {
+    public Result news(Context context) {
         Result html = Results.html();
+        EntityManager em = EntityManagerProvider.get();
+        Session session = context.getSession();
         
+        Query q = em.createQuery("SELECT x FROM User_session x where id='" + session.get(CookieSession) + "'");
+        List<User_session> uSession = (List<User_session>) q.getResultList();
         
+        q = em.createQuery("Select x FROM User x where id='" + uSession.get(0).user_id + "'");
+        List<User> user = (List<User>) q.getResultList();
+        
+        html.render("fullname", user.get(0).full_name);
         
         return html;
     }
