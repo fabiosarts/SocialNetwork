@@ -23,11 +23,21 @@ import ninja.Results;
 
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import dao.RelationshipDao;
+import dao.UserDao;
+import etc.Constants;
+import etc.PostType;
+import etc.RelationType;
 import filters.LoginFilter;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import models.Comment;
+import models.Post;
+import models.Relationship;
 import models.User;
 import models.User_session;
 import ninja.Context;
@@ -39,30 +49,70 @@ import ninja.session.Session;
 
 @Singleton
 public class ApplicationController {
-    public static String CookieSession = "sessionid";
-    
     @Inject
     Provider<EntityManager> EntityManagerProvider;
+    @Inject UserDao userDao;
+    @Inject RelationshipDao relationshipDao;
 
     @FilterWith(LoginFilter.class)
     public Result index(Context context) {
+        // Redirect to /news if filter is OK
         return Results.redirect("/news");
     }
     
     @UnitOfWork
     @FilterWith(LoginFilter.class)
     public Result news(Context context) {
+        // Initial declarations
         Result html = Results.html();
         EntityManager em = EntityManagerProvider.get();
         Session session = context.getSession();
         
-        Query q = em.createQuery("SELECT x FROM User_session x where id='" + session.get(CookieSession) + "'");
-        List<User_session> uSession = (List<User_session>) q.getResultList();
+        String strQuery;
         
-        q = em.createQuery("Select x FROM User x where id='" + uSession.get(0).user_id + "'");
-        List<User> user = (List<User>) q.getResultList();
+        // Temporal vars
+        // -------------
+        Query q;
         
-        html.render("fullname", user.get(0).full_name);
+        User actualUser = userDao.getUser(context);
+        
+        // Get mutual friend list
+        List<User> mutualFriends = relationshipDao.getRelationList(actualUser, RelationType.Friends);
+        
+        // Get mutual friends post
+        strQuery = "SELECT x FROM Post x WHERE user_id IN (";
+        for(int i = 0; i < mutualFriends.size(); i++) {
+            strQuery += "'" + mutualFriends.get(i).getId() + "', ";
+        }
+        strQuery += "'" + actualUser.getId()+ "') ORDER BY timestamp DESC";
+        // Get all post from user's relatives posts
+        q = em.createQuery(strQuery);
+        List<Post> posts = (List<Post>) q.getResultList();
+        
+        // Get all comments from post
+        // --------------------------
+        // Create a query for comments by post IDs, the result should be something like
+        // "SELECT * FROM Comment WHERE post_id IN ('8', '7', '3', '2', '1', '6')"
+        //
+        
+        List<Comment> comments = new ArrayList<Comment>();
+        strQuery = "SELECT x FROM Comment x WHERE post_id IN (";
+        for(int i = 0; i < posts.size(); i++) {
+            strQuery += "'" + posts.get(i).getId().toString() + "'";
+            
+            if(i != posts.size() - 1) {
+               strQuery += ", "; 
+            }
+        }
+        strQuery += ") ORDER BY timestamp DESC";
+        q = em.createQuery(strQuery);
+        comments = (List<Comment>) q.getResultList();
+        
+        // HTML Rendering stuff
+        html.render("user", actualUser);
+        html.render("posts", posts); 
+        html.render("comments", comments);
+        html.render("friends", mutualFriends);
         
         return html;
     }
@@ -71,22 +121,15 @@ public class ApplicationController {
     public Result login(@Param("email") String pEmail, @Param("secret") String pPassword, Context context) {
         if(context.getMethod() == "POST")
         {
-            EntityManager em = EntityManagerProvider.get();
-            Session session = context.getSession();
-
-            Query q = em.createQuery("SELECT x FROM User x where email='" + pEmail + "'");
-            List<User> user = (List<User>) q.getResultList();
-
-            if(user.size() == 1) {
-                if(pPassword.equals(user.get(0).password)) {
-                    User_session uSession = new User_session(UUID.randomUUID().toString(), user.get(0).id);
-                    em.persist(uSession);
-                    session.put(CookieSession, uSession.id);
-
-                    return Results.redirect("/news");
-                } else {
-                    return Results.redirect("/");
-                }
+            User canLogin = userDao.canLogin(pEmail, pPassword);
+            
+            if (canLogin != null) {
+                EntityManager em = EntityManagerProvider.get();
+                
+                User_session uSession = new User_session(canLogin);
+                em.persist(uSession);
+                context.getSession().put(Constants.CookieSession, uSession.getId());
+                return Results.redirect("/news");
             }
         } else {
             return Results.html();
@@ -114,5 +157,54 @@ public class ApplicationController {
         em.persist(user);
         
         return Results.redirect("/");
+    }
+    
+    @Transactional
+    @FilterWith(LoginFilter.class)
+    public Result post_create (@Param("content") String content, Context context) {
+        Session session = context.getSession();
+        EntityManager em = EntityManagerProvider.get();
+        
+        Query q;
+        q = em.createQuery("SELECT x FROM User_session x WHERE id='" + session.get(Constants.CookieSession) + "'");
+        List<User_session> uSession = (List<User_session>) q.getResultList();
+        
+        Post newPost = new Post(uSession.get(0).getUser(), PostType.Status.ordinal(), content, new Timestamp(new Date().getTime()));
+        
+        em.persist(newPost);
+        
+        return Results.redirect("/");
+    }
+    
+    @Transactional
+    @FilterWith(LoginFilter.class)
+    public Result post_comment (@Param("post") String Post, @Param("content") String Content, Context context) {
+        Session session = context.getSession();
+        EntityManager em = EntityManagerProvider.get();
+        
+        Query q;
+        q = em.createQuery("SELECT x FROM User_session x WHERE id='" + session.get(Constants.CookieSession) + "'");
+        List<User_session> uSession = (List<User_session>) q.getResultList();
+        
+        Comment newComment = new Comment(uSession.get(0).getUser(), Long.valueOf(Post), Content, new Timestamp(new Date().getTime()));
+        em.persist(newComment);
+        
+        return Results.redirect("/");
+    }
+    
+    @FilterWith(LoginFilter.class)
+    public Result profile (Context context) {
+        // Initial declarations
+        Result html = Results.html();
+        
+        User actualUser = userDao.getUser(context);
+        List<User> mutualFriends = relationshipDao.getRelationList(actualUser, RelationType.Friends);
+        List<User> friendRequest = relationshipDao.getRelationList(actualUser, RelationType.Request);
+        
+        html.render("user", actualUser);
+        html.render("friends", mutualFriends);
+        html.render("requests", friendRequest);
+        
+        return html;
     }
 }

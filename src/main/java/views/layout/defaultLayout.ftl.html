@@ -40,55 +40,25 @@
             <div class="col-sm-3">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <a href="#"><img class="img-responsive img-circle center-block" src="/assets/img/general/icon-profile.png" alt="Profile picture"></a>
-                        <h2 class="text-center">${fullname}</h2>
+                        <a href="/profile"><img class="img-responsive img-circle center-block" src="/assets/img/general/icon-profile.png" alt="Profile picture"></a>
+                        <h2 class="text-center">${user.full_name}</h2>
+                        <h6 class="text-center">${user.status}</h6>
                     </div>
-                </div>
-                <div class="panel panel-default hidden-xs">
-                    <div class="panel-body">
-
-                        <div class="media">
-                            <div class="media-left">
-                                <a href="#"><img class="media-object img-rounded avatar-32" src="/assets/img/general/icon-profile.png" alt="Profile picture"></a>
-                            </div>
-                            <div class="media-body">
-                                <h4 class="media-heading">Chiche</h4>
-                                Chiche's status
-                            </div>
-                        </div>
-                        
-                        <hr>
-                        <div class="media">
-                            <div class="media-left">
-                                <a href="#"><img class="media-object img-rounded avatar-32" src="/assets/img/general/icon-profile.png" alt="Profile picture"></a>
-                            </div>
-                            <div class="media-body">
-                                <h4 class="media-heading">Carlos</h4>
-                                Carlos's status
-                            </div>
-                        </div>
-                        
-                        <hr>
-                        <div class="media">
-                            <div class="media-left">
-                                <a href="#"><img class="media-object img-rounded avatar-32" src="/assets/img/general/icon-profile.png" alt="Profile picture"></a>
-                            </div>
-                            <div class="media-body">
-                                <h4 class="media-heading">Alberti</h4>
-                                Alberti's status
-                            </div>
-                        </div>
-                        
-                        <hr>
-                        <div class="media">
-                            <div class="media-left">
-                                <a href="#"><img class="media-object img-rounded avatar-32" src="/assets/img/general/icon-profile.png" alt="Profile picture"></a>
-                            </div>
-                            <div class="media-body">
-                                <h4 class="media-heading">Juan</h4>
-                                Juan's status
-                            </div>
-                        </div>
+                    
+                    <div class="list-group hidden-xs">
+                        <#list friends as friend>
+                            <a href="#" class="list-group-item">
+                                <div class="media">
+                                    <div class="media-left media-middle">
+                                        <img class="media-object img-rounded avatar-48" src="/assets/img/general/icon-profile.png" alt="Profile picture">
+                                    </div>
+                                    <div class="media-body">
+                                        <h4 class="media-heading">${friend.full_name}</h4>
+                                        <h6>${friend.status}</h6>
+                                    </div>
+                                </div>
+                            </a>
+                        </#list>
                     </div>
                 </div>
             </div>

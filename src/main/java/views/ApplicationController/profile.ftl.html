@@ -1,0 +1,63 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Profile">    
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Control panel</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="${user.status}" name="content">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-md-2">
+                <img class="img-rounded img-responsive center-block" src="/assets/img/general/icon-profile.png">
+            </div>
+            <div class="col-md-10">
+                <form>
+                    <input type="file" name="avatarimage" accept=".jpeg, .jpg, .jpe, .png">
+                    <br>
+                    <button type="button" class="btn btn-default btn-lg btn-block">Send...</button>
+                </form>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Notifications
+            </div>
+
+            <div class="list-group">
+                <#list requests as request>
+                <a href="#" class="list-group-item">
+                    <div class="media">
+                        <div class="media-left media-middle">
+                            <img class="media-object img-rounded avatar-48" src="/assets/img/general/icon-profile.png" alt="Profile picture">
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">${request.full_name}</h4>
+                            <h6>${request.status}</h6>
+                        </div>
+                    </div>
+                </a>
+                </#list>
+            </div>
+        </div>
+    </div>
+</div>
+
+</@layout.myLayout>
