@@ -1,26 +1,36 @@
 <#import "../layout/defaultLayout.ftl.html" as layout> 
-<@layout.myLayout "Home page">
+<@layout.myLayout "Home page">    
 
-<div class="panel panel-primary">
+<div class="panel panel-primary panel-shadow">
     <div class="panel-body">
-        <form method="POST" action="/post/create">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="What's on your mind?" name="content">
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-camera" aria-hidden="true"></span></button>
-                    <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
-                </span>
-            </div>
-        </form>
+        <img class="img-responsive img-circle center-block" src="/assets/img/general/icon-profile.png" alt="Profile picture">
+        <h2 class="text-center">
+            ${target.full_name}
+        </h2>
+        <h6 class="text-center">
+            ${target.status}
+        </h6>
+        <nav>
+            <ul class="pager">
+                <#if relation.relation_type == 3>
+                <li><a href="/friends/add/${relation.user_b.username}">Send request</a></li>
+                </#if>
+                <#if relation.relation_type == 1 && disable_add == false>
+                <li><a href="/friends/accept/${relation.id}">Accept request</a></li>
+                </#if>
+                <li><a href="#">Block</a></li>
+            </ul>
+        </nav>
     </div>
 </div>
 
+<#if relation.relation_type == 2>
 <#list posts as post>
 <div class="panel panel-primary">
     <div class="panel-body">
         <div class="media">
             <div class="media-left">
-                <a href="/profile/view/${post.author.username}">
+                <a href="#">
                     <img class="media-object img-rounded avatar-64" src="/assets/img/general/icon-profile.png">
                 </a>
             </div>
@@ -32,7 +42,7 @@
                 <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> ${post.timestamp}
                 <#list comments as comment>
                     <#if comment.post_id == post.id>
-                        <div class="media">
+                        <div class="media" id="comment_${comment.id}">
                             <div class="media-left media-middle">
                                 <a href="/profile/view/${comment.author.username}">
                                     <img class="media-object img-rounded avatar-48" src="/assets/img/general/icon-profile.png">
@@ -51,6 +61,7 @@
     <div class="panel-footer">
         <form method="POST" action="/post/comment">
             <input type="hidden" name="post" value="${post.id}">
+            <input type="hidden" name="returnto" value="/profile/view/${relation.user_b.username}">
             <div class="input-group">
                 <input type="text" class="form-control" placeholder="Write a comment..." name="content">
                 <span class="input-group-btn">
@@ -61,5 +72,6 @@
     </div>
 </div>
 </#list>
+</#if>
 
 </@layout.myLayout>

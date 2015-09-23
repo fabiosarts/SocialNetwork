@@ -41,6 +41,14 @@ public class Routes implements ApplicationRoutes {
         router.POST().route("/post/comment").with(ApplicationController.class, "post_comment");
         
         router.GET().route("/profile").with(ApplicationController.class, "profile");
+        router.POST().route("/profile/set").with(ApplicationController.class, "profile_set");
+        
+        router.GET().route("/profile/view/{profile}").with(ApplicationController.class, "profile_view");
+        
+        router.GET().route("/friends/add/{username}").with(ApplicationController.class, "friend_add");
+        router.GET().route("/friends/accept/{relid}").with(ApplicationController.class, "friend_accept");
+        router.GET().route("/friends/reject/{relid}").with(ApplicationController.class, "friend_reject");
+        //router.GET().route("/friends/block/{relid}").with(ApplicationController.class, "friend_reject");
  
         ///////////////////////////////////////////////////////////////////////
         // Assets (pictures / javascript)

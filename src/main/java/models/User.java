@@ -8,6 +8,7 @@ import javax.persistence.Id;
 @Entity
 public class User {
     private Long id;
+    private String username;
     private String email;
     private String password;
     private String full_name;
@@ -15,7 +16,8 @@ public class User {
     
     public User() {}
 
-    public User(String email, String password, String full_name) {
+    public User(String username, String email, String password, String full_name) {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.full_name = full_name;
@@ -37,6 +39,20 @@ public class User {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+    
+    /**
+     * @return the username
+     */
+    public String getUsername() {
+        return this.username;
+    }
+    
+    /**
+     * @param email the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**

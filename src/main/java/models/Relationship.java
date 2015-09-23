@@ -43,7 +43,7 @@ public class Relationship {
     /**
      * @return the user_a
      */
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "user_a", referencedColumnName = "user_id")
     public User getUser_a() {
         return user_a;
@@ -59,7 +59,7 @@ public class Relationship {
     /**
      * @return the user_b
      */
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "user_b", referencedColumnName = "user_id")
     public User getUser_b() {
         return user_b;

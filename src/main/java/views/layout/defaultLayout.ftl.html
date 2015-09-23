@@ -41,23 +41,29 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <a href="/profile"><img class="img-responsive img-circle center-block" src="/assets/img/general/icon-profile.png" alt="Profile picture"></a>
-                        <h2 class="text-center">${user.full_name}</h2>
-                        <h6 class="text-center">${user.status}</h6>
+                        <h2 class="text-center">
+                            ${user.full_name}
+                        </h2>
+                        <h6 class="text-center">
+                            ${user.status}
+                        </h6>
                     </div>
                     
                     <div class="list-group hidden-xs">
                         <#list friends as friend>
-                            <a href="#" class="list-group-item">
-                                <div class="media">
-                                    <div class="media-left media-middle">
-                                        <img class="media-object img-rounded avatar-48" src="/assets/img/general/icon-profile.png" alt="Profile picture">
+                            <#if friend.id != user.id>
+                                <a href="/profile/view/${friend.username}" class="list-group-item">
+                                    <div class="media">
+                                        <div class="media-left media-middle">
+                                            <img class="media-object img-rounded avatar-48" src="/assets/img/general/icon-profile.png" alt="Profile picture">
+                                        </div>
+                                        <div class="media-body">
+                                            <h4 class="media-heading">${friend.full_name}</h4>
+                                            <h6>${friend.status}</h6>
+                                        </div>
                                     </div>
-                                    <div class="media-body">
-                                        <h4 class="media-heading">${friend.full_name}</h4>
-                                        <h6>${friend.status}</h6>
-                                    </div>
-                                </div>
-                            </a>
+                                </a>
+                            </#if>
                         </#list>
                     </div>
                 </div>

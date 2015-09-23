@@ -8,7 +8,7 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-md-12">
-                <form>
+                <form method="POST" action="/profile/set">
                     <div class="input-group">
                         <input type="text" class="form-control" value="${user.status}" name="content">
                         <span class="input-group-btn">
@@ -26,10 +26,10 @@
                 <img class="img-rounded img-responsive center-block" src="/assets/img/general/icon-profile.png">
             </div>
             <div class="col-md-10">
-                <form>
+                <form method="POST" action="/uploadtest">
                     <input type="file" name="avatarimage" accept=".jpeg, .jpg, .jpe, .png">
                     <br>
-                    <button type="button" class="btn btn-default btn-lg btn-block">Send...</button>
+                    <button type="submit" class="btn btn-default btn-lg btn-block">Send...</button>
                 </form>
             </div>
         </div>
@@ -41,21 +41,37 @@
                 Notifications
             </div>
 
-            <div class="list-group">
+            <ul class="list-group">
                 <#list requests as request>
-                <a href="#" class="list-group-item">
+                <li href="#" class="list-group-item">
                     <div class="media">
                         <div class="media-left media-middle">
-                            <img class="media-object img-rounded avatar-48" src="/assets/img/general/icon-profile.png" alt="Profile picture">
+                            <a href="/profile/view/${request.user_a.username}">
+                                <img class="media-object img-rounded avatar-48" src="/assets/img/general/icon-profile.png" alt="Profile picture">
+                            </a>
                         </div>
                         <div class="media-body">
-                            <h4 class="media-heading">${request.full_name}</h4>
-                            <h6>${request.status}</h6>
+                            <div class="row">
+                                <div class="col-md-10 col-xs-8">
+                                    <h4 class="media-heading">
+                                        <a href="/profile/view/${request.user_a.username}">
+                                            ${request.user_a.full_name}
+                                        </a>
+                                    </h4>
+                                    <h6>${request.user_a.status}</h6>
+                                </div>
+                                <div class="col-md-2 col-xs-4">
+                                    <div class="btn-group-vertical pull-right">
+                                        <button type="button" onclick="location.href='/friends/accept/${request.id}';" class="btn btn-info"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+                                        <button type="button" onclick="location.href='/friends/reject/${request.id}';" class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </a>
+                </li>
                 </#list>
-            </div>
+            </ul>
         </div>
     </div>
 </div>

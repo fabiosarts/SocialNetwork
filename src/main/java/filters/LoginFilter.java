@@ -2,8 +2,7 @@ package filters;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import controllers.ApplicationController;
-import etc.Constants;
+import etc.Globals;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -24,12 +23,12 @@ public class LoginFilter implements Filter {
     @UnitOfWork
     public Result filter(FilterChain fc, Context context) {
         Session session = context.getSession();
-        if(context.getSession() == null || session.get(Constants.CookieSession) == null) {
+        if(context.getSession() == null || session.get(Globals.CookieSession) == null) {
             return Results.redirect("/login");
         } else {
             EntityManager em = EntityManagerProvider.get();
 
-            Query q = em.createQuery("SELECT x FROM User_session x where id='" + session.get(Constants.CookieSession) + "'");
+            Query q = em.createQuery("SELECT x FROM User_session x where id='" + session.get(Globals.CookieSession) + "'");
             List<User_session> uSession = q.getResultList();
 
             if (uSession.size() == 1) {
@@ -39,5 +38,4 @@ public class LoginFilter implements Filter {
             }
         }
     }
-
 }
