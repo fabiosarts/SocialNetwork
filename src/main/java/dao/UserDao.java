@@ -23,12 +23,12 @@ public class UserDao {
             EntityManager em = EntityManagerProvider.get();
             
             Query q = em.createQuery("SELECT x FROM User x WHERE email = :emailParam");
-            User user = (User) q.setParameter("emailParam", email).getSingleResult();
+            List<User> user = (List<User>) q.setParameter("emailParam", email).getResultList();
             
-            if(user != null)
+            if(user.size() == 1)
             {
-                if(user.getPassword().equals(password)) {
-                    return user;
+                if(user.get(0).getPassword().equals(password)) {
+                    return user.get(0);
                 }
             }
         }
